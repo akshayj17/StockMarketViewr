@@ -1,0 +1,77 @@
+@media only screen and (max-width: 768px) {
+    .normdisplay{
+        display: none;
+    }
+    .smalldisplay{
+        display: inline;
+    }
+    #tp {
+        width: 90%;
+        height: 270px;
+    }
+    #mychart {
+        overflow-x: scroll;
+        min-width: 320px;
+
+        /*width:100%;*/
+        /*width: 90%;*/
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .smalldisplay {
+        display: none;
+    }
+
+    .normdisplay {
+        display: inline;
+    }
+
+    #tp {
+        width: 500px;
+        height: 400px;
+    }
+}
+a { cursor: pointer; }
+
+body {
+    background:url("background.PNG") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+#formp {
+    margin-left: 10px;
+}
+#log {
+    color: red;
+    margin-left: 10px;
+    margin-top: -10px;
+}
+#p1 {
+    background-color: white;
+}
+#carousel-example-generic {
+    background-color: white;
+    border-radius: 5px;
+}
+#tab1 {
+    margin-top: 10px;
+}
+#fb {
+    margin-top: 10px;
+}
+#star {
+    /*background-image:url('star.PNG');*/
+}
+.white{
+    font-weight: bold;
+    font-size: 22px;
+    color: white;
+}
+.yellow{
+    font-weight: bold;
+    font-size: 22px;
+    color: yellow;
+}

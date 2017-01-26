@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <!-- jQuery ui -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script src="HW8.js"></script>
+    <link rel="stylesheet" type="text/css" href="HW8.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/4.12.0/bootstrap-social.css">
+    <title>Stock Market Search</title>
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : '1545092462451675',
+                xfbml      : false,
+                status     : true,
+                version    : 'v2.5'
+            });
+        };
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+</head>
+<body>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="p1" class="well well-lg">
+                <p style="font-size: large;text-align: center;font-weight: bold">Stock Market Search</p>
+
+                <div class="row">
+                    <div class="col-md-3" style="margin-top: 10px;">
+                        <p id="formp" style="font-weight: bold">Enter the stock name or symbol: <span style="color:red">*</span> </p>
+                    </div>
+                    <form id="form1">
+                        <div class="col-md-6" style="margin-top: 10px;">
+                            <input id="sym1" class="form-control" name="in_var" type="text" required pattern="[a-zA-Z0-9]+ *[a-zA-Z0-9 ]*" placeholder="Apple Inc or AAPL" style="width: 90%;margin-left: 10px;" >
+                        </div>
+                    </form>
+                    <div class="col-md-3" style="margin-top: 10px;">
+                        <div style="margin-left: 10px;">
+                            <button type="button" class="btn btn-primary" form="form1" onclick="getQuote()"><span class="glyphicon glyphicon-search"></span> Get Quote</button>
+                            <input type="submit" id="submit_handler" form="form1" style="display: none;">
+                            <button type="button" class="btn btn-secondary" onclick="clearb()"><span class="glyphicon glyphicon-refresh"></span> clear</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3" style="margin-top: 10px;"></div>
+                    <div class="col-md-6" style="margin-top: 10px;"><p id="log"></p></div>
+                    <div class="col-md-3" style="margin-top: 10px;padding-left: -10px">
+                        <p style="font-size: smaller;font-weight: bold;margin-left: 10px">Powered By: <a href="http://dev.markitondemand.com/MODApis/" target="_blank"><img src="mod-logo.png" style="width: 120px;"></a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr style="color: white;margin-top: 0px">
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+
+    <!--Carousel-->
+            <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" data-wrap="false" data-interval="false">
+                <!-- Indicators -->
+                <ol class="carousel-indicators" style="visibility: hidden;">
+                    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                </ol>
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner" role="listbox">
+                    <div class="item active">
+                        <div class="panel panel-default" style="margin: 15px;padding: 0px;">
+                            <div class="panel-heading" style="padding-bottom: 0px">
+                                <div class="row" >
+                                    <div class="col-xs-6 col-sm-2 col-md-7 col-lg-9"><p style="font-weight: bold">Favorite List</p></div>
+                                    <!--<div class="col-md-7"></div>-->
+                                    <div class="col-xs-6 col-sm-10 col-md-5 col-lg-3">
+                                        <p style="font-size: small;margin-left: -32px; margin-bottom: 0px "><span class="normdisplay" >Automatic Refresh:</span> <span class="smalldisplay"></span>
+                                            <label class="checkbox-inline" data-toggle="tooltip" title="Refresh Stock information every 5 seconds">
+                                                <input type="checkbox" id="check1" data-toggle="toggle">
+                                            </label>
+                                            <button type="button" class="btn btn-default" data-toggle="tooltip" title="Refresh Stock information" onclick="refresh()"><span class="glyphicon glyphicon-refresh"></span></button>
+                                            <button type="button" id="next1" class="btn btn-default" href="#carousel-example-generic" role="button" onclick="slidenext()" data-toggle="tooltip" title="Carousel Next">
+                                                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                                <span class="sr-only">Next</span>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped" id="table2">
+                                                <tr>
+                                                    <td style="font-weight: bold">Symbol</td>
+                                                    <td style="font-weight: bold">Company Name</td>
+                                                    <td style="font-weight: bold">Stock Price</td>
+                                                    <td style="font-weight: bold">Change (Change Percent)</td>
+                                                    <td style="font-weight: bold">Market Cap</td>
+                                                    <td>        </td>
+                                                </tr>
+
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+
+                        <!--Header-->
+                        <div class="panel panel-default" style="margin: 15px;padding: 0px;">
+                            <div class="panel-heading" style="padding-bottom: 0px">
+                                <div class="row" style="margin-bottom: 0px; padding-bottom: 0px; padding-top: 5px;" >
+                                    <div class="col-md-2 col-xs-2">
+                                        <button type="button" class="btn btn-default" href="#carousel-example-generic" role="button" data-slide="prev">
+                                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                            <span class="sr-only">Previous</span>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-8 col-xs-8" style="text-align: center;font-weight: bold">Stock Details</div>
+                                    <div class="col-md-2 col-xs-2"></div>
+                                </div>
+                                    <!--Tab-->
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div id="tab1">
+                                            <div>
+                                                        <!-- Nav tabs -->
+                                                <ul class="nav nav-pills" role="tablist">
+                                                    <li role="presentation" class="active"><a href="#current" aria-controls="home" role="tab" data-toggle="pill"><span class="glyphicon glyphicon-dashboard"></span> <span class="normdisplay">Current Stock</span><span class="smalldisplay">Stock</span></span></a></li>
+                                                    <li role="presentation"><a href="#history" aria-controls="profile" role="tab" data-toggle="pill" onclick="getchart()"><span class="glyphicon glyphicon-stats"></span><span class="normdisplay">Historical Charts</span> <span class="smalldisplay">Charts</span> </a></li>
+                                                    <li role="presentation"><a href="#news" aria-controls="messages" role="tab" data-toggle="pill" onclick="getnewsfeed()"><span class="glyphicon glyphicon-link"></span><span class="normdisplay"> News Feeds</span><span class="smalldisplay">News</span></a></li>
+                                                </ul>
+
+                                                        <!-- Tab panes -->
+                                                <div class="tab-content">
+                                                    <div role="tabpanel" class="tab-pane active" id="current">
+                                                        <!--facebook & favorites-->
+                                                        <div class="row">
+                                                            <hr>
+                                                        </div>
+                                                        <div id="fb">
+                                                            <div class="row">
+                                                                <div class="col-md-3 col-xs-6">
+                                                                    <p style="font-weight: bold">Stock Details</p>
+                                                                </div>
+                                                                <div class="col-md-7"></div>
+                                                                <div class="col-md-2 col-xs-6">
+                                                                    <img id="fb1" src="fb.PNG" >
+                                                                    <!--<img id="star1" src="star.PNG">-->
+                                                                    <button id="star1" type="button" class="btn btn-default-lg"><span id="star2" class="glyphicon glyphicon-star white"></span></button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!--Quote Table-->
+                                                        <div class="row" style="margin-top: 10px">
+                                                            <div class="col-md-6 col-xs-12">
+                                                                <table class="table table-striped">
+                                                                    <tbody>
+                                                                    <tr><td style="font-weight: bold">Name</td><td id="t1"></td></tr>
+                                                                    <tr><td style="font-weight: bold">Symbol</td><td id="t2"></td></tr>
+                                                                    <tr><td style="font-weight: bold">Last Price</td><td id="t3"></td></tr>
+                                                                    <tr><td style="font-weight: bold">Change (Change Percent)</td><td id="t4"></td></tr>
+                                                                    <tr><td style="font-weight: bold">Time and Date</td><td id="t5"></td></tr>
+                                                                    <tr><td style="font-weight: bold">Market Cap</td><td id="t6"></td></tr>
+                                                                    <tr><td style="font-weight: bold">Volume</td><td id="t7"></td></tr>
+                                                                    <tr><td style="font-weight: bold">Change YTD (Change Percent YTD)</td><td id="t8"></td></tr>
+                                                                    <tr><td style="font-weight: bold">High Price</td><td id="t9"></td></tr>
+                                                                    <tr><td style="font-weight: bold">Low Price</td><td id="t10"></td></tr>
+                                                                    <tr><td style="font-weight: bold">Opening Price</td><td id="t11"></td></tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <!--Yahoo image-->
+                                                            <div class="col-md-6 col-xs-12">
+                                                                <img id="tp" src="">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div role="tabpanel" class="tab-pane" id="history">
+                                                        <div class="row">
+                                                            <hr>
+                                                        </div>
+                                                        <div id="mychart"></div>
+                                                    </div>
+                                                    <div role="tabpanel" class="tab-pane" id="news">
+                                                        <div class="row">
+                                                            <hr>
+                                                        </div>
+                                                        <div id="mynews"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
